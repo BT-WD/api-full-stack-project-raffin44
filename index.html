@@ -1,11 +1,431 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>API Full Stack Project</title>
-  </head>
-  <body>
-    <!-- You code goes here-->
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FIFA World Cup 2026</title>
+  <link rel="stylesheet" href="index.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ── HERO ── -->
+  <header class="hero">
+    <div class="hero__noise"></div>
+    <div class="hero__grid-lines"></div>
+
+    <nav class="nav">
+      <div class="nav__logo">
+        <span class="nav__trophy">⚽</span>
+        <span class="nav__brand">WC<em>26</em></span>
+      </div>
+      <ul class="nav__links">
+        <li><a href="#schedule">Schedule</a></li>
+        <li><a href="#teams">Teams</a></li>
+        <li><a href="#venues">Venues</a></li>
+        <li><a href="#stats" class="nav__cta">Live Stats</a></li>
+      </ul>
+      <button class="nav__hamburger" aria-label="Open menu">☰</button>
+    </nav>
+
+    <div class="hero__content">
+      <p class="hero__eyebrow">June 11 – July 19, 2026</p>
+      <h1 class="hero__title">FIFA<br/><span>World Cup</span><br/>2026</h1>
+      <p class="hero__hosts">🇺🇸 USA &nbsp;•&nbsp; 🇨🇦 Canada &nbsp;•&nbsp; 🇲🇽 Mexico</p>
+
+      <div class="hero__stats">
+        <div class="stat-card">
+          <span class="stat-card__icon">🏟️</span>
+          <span class="stat-card__value" id="stat-nations">48</span>
+          <span class="stat-card__label">Nations</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card__icon">⚽</span>
+          <span class="stat-card__value" id="stat-matches">104</span>
+          <span class="stat-card__label">Matches</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card__icon">🗺️</span>
+          <span class="stat-card__value" id="stat-venues">16</span>
+          <span class="stat-card__label">Venues</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card__icon">🌍</span>
+          <span class="stat-card__value" id="stat-countries">3</span>
+          <span class="stat-card__label">Host Countries</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero__scroll-hint">Scroll ↓</div>
+  </header>
+
+  <main>
+
+    <!-- ── LIVE TICKER ── -->
+    <section class="ticker">
+      <span class="ticker__label">🔴 LIVE</span>
+      <div class="ticker__track">
+        <div class="ticker__content" id="ticker-content">
+          <!-- Populated by JS -->
+          <span>Loading live updates…</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── MATCH SCHEDULE ── -->
+    <section class="section" id="schedule">
+      <div class="container">
+        <div class="section__header">
+          <h2 class="section__title">Match Schedule</h2>
+          <p class="section__sub">All times shown in your local timezone</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+          <button class="filter-btn filter-btn--active" data-filter="all">All Matches</button>
+          <button class="filter-btn" data-filter="group">Group Stage</button>
+          <button class="filter-btn" data-filter="knockout">Knockout</button>
+          <button class="filter-btn" data-filter="favorites">★ Favorites</button>
+
+          <div class="filters__search">
+            <input type="text" id="schedule-search" placeholder="Search team or venue…" class="search-input" />
+          </div>
+        </div>
+
+        <!-- Date range filter -->
+        <div class="date-filters">
+          <label>From <input type="date" id="date-from" class="date-input" /></label>
+          <label>To &nbsp;&nbsp;<input type="date" id="date-to" class="date-input" /></label>
+          <button id="date-clear" class="btn-ghost">Clear dates</button>
+        </div>
+
+        <!-- Match list placeholder -->
+        <div id="matches-container" class="matches-list">
+          <!-- Static placeholder cards -->
+          <div class="match-card match-card--opening" data-type="group">
+            <div class="match-card__meta">
+              <span class="badge badge--opening">Opening Match</span>
+              <span class="match-card__date">📅 2026-06-11 &nbsp; 🕐 11:00 AM</span>
+              <span class="match-card__venue">📍 Estadio Azteca, Mexico City</span>
+            </div>
+            <div class="match-card__fixture">
+              <div class="team">
+                <span class="team__flag">🇲🇽</span>
+                <span class="team__code">MX</span>
+                <span class="team__name">Mexico</span>
+              </div>
+              <div class="match-card__vs">
+                <span class="vs-text">VS</span>
+                <span class="match-card__status match-card__status--upcoming">Upcoming</span>
+              </div>
+              <div class="team team--right">
+                <span class="team__flag">🏳️</span>
+                <span class="team__code">TBD</span>
+                <span class="team__name">TBD</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="match-card" data-type="group">
+            <div class="match-card__meta">
+              <span class="badge badge--group">Group Stage</span>
+              <span class="match-card__date">📅 2026-06-11 &nbsp; 🕑 2:00 PM</span>
+              <span class="match-card__venue">📍 SoFi Stadium, Los Angeles</span>
+            </div>
+            <div class="match-card__fixture">
+              <div class="team">
+                <span class="team__flag">🇺🇸</span>
+                <span class="team__code">USA</span>
+                <span class="team__name">United States</span>
+              </div>
+              <div class="match-card__vs">
+                <span class="vs-text">VS</span>
+                <span class="match-card__status match-card__status--upcoming">Upcoming</span>
+              </div>
+              <div class="team team--right">
+                <span class="team__flag">🏳️</span>
+                <span class="team__code">TBD</span>
+                <span class="team__name">TBD</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="match-card" data-type="group">
+            <div class="match-card__meta">
+              <span class="badge badge--group">Group Stage</span>
+              <span class="match-card__date">📅 2026-06-12 &nbsp; 🕐 3:00 PM</span>
+              <span class="match-card__venue">📍 BC Place, Vancouver</span>
+            </div>
+            <div class="match-card__fixture">
+              <div class="team">
+                <span class="team__flag">🇨🇦</span>
+                <span class="team__code">CAN</span>
+                <span class="team__name">Canada</span>
+              </div>
+              <div class="match-card__vs">
+                <span class="vs-text">VS</span>
+                <span class="match-card__status match-card__status--upcoming">Upcoming</span>
+              </div>
+              <div class="team team--right">
+                <span class="team__flag">🏳️</span>
+                <span class="team__code">TBD</span>
+                <span class="team__name">TBD</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Placeholder for dynamically loaded matches -->
+          <div id="dynamic-matches-placeholder" class="placeholder-notice">
+            <p>🔄 Additional matches will load from the API. See <code>index.js</code> for integration details.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TEAMS ── -->
+    <section class="section section--dark" id="teams">
+      <div class="container">
+        <div class="section__header">
+          <h2 class="section__title">Competing Nations</h2>
+          <p class="section__sub">48 teams across 12 groups</p>
+        </div>
+
+        <div class="filters">
+          <input type="text" id="team-search" placeholder="Search nation…" class="search-input search-input--wide" />
+          <select id="group-filter" class="select-input">
+            <option value="">All Groups</option>
+            <option value="A">Group A</option>
+            <option value="B">Group B</option>
+            <option value="C">Group C</option>
+            <option value="D">Group D</option>
+          </select>
+          <select id="confederation-filter" class="select-input">
+            <option value="">All Confederations</option>
+            <option value="UEFA">UEFA</option>
+            <option value="CONMEBOL">CONMEBOL</option>
+            <option value="CONCACAF">CONCACAF</option>
+            <option value="CAF">CAF</option>
+            <option value="AFC">AFC</option>
+            <option value="OFC">OFC</option>
+          </select>
+        </div>
+
+        <!-- Teams grid placeholder -->
+        <div id="teams-container" class="teams-grid">
+          <!-- Static sample cards -->
+          <div class="team-card" data-group="A" data-conf="CONCACAF">
+            <div class="team-card__flag">🇲🇽</div>
+            <div class="team-card__info">
+              <h3 class="team-card__name">Mexico</h3>
+              <span class="team-card__group">Group A</span>
+              <span class="team-card__rank">FIFA Rank: #<span class="rank-placeholder">--</span></span>
+            </div>
+            <button class="team-card__fav" aria-label="Favorite Mexico">★</button>
+          </div>
+
+          <div class="team-card" data-group="A" data-conf="CONCACAF">
+            <div class="team-card__flag">🇺🇸</div>
+            <div class="team-card__info">
+              <h3 class="team-card__name">United States</h3>
+              <span class="team-card__group">Group A</span>
+              <span class="team-card__rank">FIFA Rank: #<span class="rank-placeholder">--</span></span>
+            </div>
+            <button class="team-card__fav" aria-label="Favorite USA">★</button>
+          </div>
+
+          <div class="team-card" data-group="B" data-conf="CONCACAF">
+            <div class="team-card__flag">🇨🇦</div>
+            <div class="team-card__info">
+              <h3 class="team-card__name">Canada</h3>
+              <span class="team-card__group">Group B</span>
+              <span class="team-card__rank">FIFA Rank: #<span class="rank-placeholder">--</span></span>
+            </div>
+            <button class="team-card__fav" aria-label="Favorite Canada">★</button>
+          </div>
+
+          <div class="team-card" data-group="B" data-conf="UEFA">
+            <div class="team-card__flag">🇧🇷</div>
+            <div class="team-card__info">
+              <h3 class="team-card__name">Brazil</h3>
+              <span class="team-card__group">Group B</span>
+              <span class="team-card__rank">FIFA Rank: #<span class="rank-placeholder">--</span></span>
+            </div>
+            <button class="team-card__fav" aria-label="Favorite Brazil">★</button>
+          </div>
+
+          <div class="team-card" data-group="C" data-conf="UEFA">
+            <div class="team-card__flag">🇩🇪</div>
+            <div class="team-card__info">
+              <h3 class="team-card__name">Germany</h3>
+              <span class="team-card__group">Group C</span>
+              <span class="team-card__rank">FIFA Rank: #<span class="rank-placeholder">--</span></span>
+            </div>
+            <button class="team-card__fav" aria-label="Favorite Germany">★</button>
+          </div>
+
+          <div class="team-card" data-group="C" data-conf="UEFA">
+            <div class="team-card__flag">🇫🇷</div>
+            <div class="team-card__info">
+              <h3 class="team-card__name">France</h3>
+              <span class="team-card__group">Group C</span>
+              <span class="team-card__rank">FIFA Rank: #<span class="rank-placeholder">--</span></span>
+            </div>
+            <button class="team-card__fav" aria-label="Favorite France">★</button>
+          </div>
+
+          <!-- Placeholder for remaining teams from API -->
+          <div class="team-card team-card--placeholder">
+            <div class="team-card__flag">🏳️</div>
+            <div class="team-card__info">
+              <h3 class="team-card__name">+ 42 more nations</h3>
+              <span class="team-card__group">Loaded via API</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── VENUES ── -->
+    <section class="section" id="venues">
+      <div class="container">
+        <div class="section__header">
+          <h2 class="section__title">Tournament Venues</h2>
+          <p class="section__sub">16 world-class stadiums across 3 countries</p>
+        </div>
+
+        <!-- Map placeholder -->
+        <div id="map-container" class="map-placeholder">
+          <div class="map-placeholder__inner">
+            <span class="map-placeholder__icon">🗺️</span>
+            <p>Interactive venue map loads here</p>
+            <small>Powered by Google Maps API — configure your key in <code>index.js</code></small>
+          </div>
+        </div>
+
+        <!-- Venue cards -->
+        <div id="venues-container" class="venues-grid">
+          <div class="venue-card">
+            <div class="venue-card__country">🇲🇽 Mexico</div>
+            <h3 class="venue-card__name">Estadio Azteca</h3>
+            <p class="venue-card__city">Mexico City</p>
+            <div class="venue-card__details">
+              <span>🪑 87,523</span>
+              <span>⚽ 6 matches</span>
+            </div>
+            <div id="venue-map-azteca" class="venue-card__map-embed">Map embed placeholder</div>
+          </div>
+
+          <div class="venue-card">
+            <div class="venue-card__country">🇺🇸 USA</div>
+            <h3 class="venue-card__name">MetLife Stadium</h3>
+            <p class="venue-card__city">New York / New Jersey</p>
+            <div class="venue-card__details">
+              <span>🪑 82,500</span>
+              <span>⚽ 8 matches (Final)</span>
+            </div>
+            <div id="venue-map-metlife" class="venue-card__map-embed">Map embed placeholder</div>
+          </div>
+
+          <div class="venue-card">
+            <div class="venue-card__country">🇺🇸 USA</div>
+            <h3 class="venue-card__name">SoFi Stadium</h3>
+            <p class="venue-card__city">Los Angeles</p>
+            <div class="venue-card__details">
+              <span>🪑 70,240</span>
+              <span>⚽ 7 matches</span>
+            </div>
+            <div id="venue-map-sofi" class="venue-card__map-embed">Map embed placeholder</div>
+          </div>
+
+          <div class="venue-card">
+            <div class="venue-card__country">🇨🇦 Canada</div>
+            <h3 class="venue-card__name">BC Place</h3>
+            <p class="venue-card__city">Vancouver</p>
+            <div class="venue-card__details">
+              <span>🪑 54,500</span>
+              <span>⚽ 6 matches</span>
+            </div>
+            <div id="venue-map-bc" class="venue-card__map-embed">Map embed placeholder</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── STATS DASHBOARD ── -->
+    <section class="section section--dark" id="stats">
+      <div class="container">
+        <div class="section__header">
+          <h2 class="section__title">Tournament Stats</h2>
+          <p class="section__sub">Live data powered by sports API</p>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stats-card">
+            <h3 class="stats-card__title">Top Scorers</h3>
+            <div id="top-scorers" class="stats-card__body">
+              <!-- Populated by JS / API -->
+              <div class="data-placeholder">
+                <span>🔄</span>
+                <p>Data loads from <code>/api/stats/scorers</code></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="stats-card">
+            <h3 class="stats-card__title">Group Standings</h3>
+            <div id="group-standings" class="stats-card__body">
+              <div class="data-placeholder">
+                <span>🔄</span>
+                <p>Data loads from <code>/api/groups/standings</code></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="stats-card stats-card--wide">
+            <h3 class="stats-card__title">Live Match Updates</h3>
+            <div id="live-updates" class="stats-card__body stats-card__body--live">
+              <div class="data-placeholder">
+                <span>🔴</span>
+                <p>Real-time events from Firebase Firestore listener</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <span class="footer__logo">⚽ WC26</span>
+      </div>
+      <div class="footer__links">
+        <h4>Data Sources</h4>
+        <ul>
+          <li><a href="https://www.football-data.org/" target="_blank" rel="noopener">football-data.org API</a></li>
+          <li><a href="https://firebase.google.com/docs/firestore" target="_blank" rel="noopener">Firebase Firestore</a></li>
+          <li><a href="https://developers.google.com/maps" target="_blank" rel="noopener">Google Maps API</a></li>
+        </ul>
+      </div>
+      <div class="footer__links">
+        <h4>Navigate</h4>
+        <ul>
+          <li><a href="#schedule">Schedule</a></li>
+          <li><a href="#teams">Teams</a></li>
+          <li><a href="#venues">Venues</a></li>
+          <li><a href="#stats">Stats</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>© 2026 WC26 Dashboard &nbsp;|&nbsp; Built for educational purposes</p>
+    </div>
+  </footer>
+
+  <script src="index.js"></script>
+</body>
 </html>
