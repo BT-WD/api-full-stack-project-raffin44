@@ -14,8 +14,8 @@ const WARN  = (...a) => console.warn ("%c[WC26]", "color:#f5c842;font-weight:bol
 const ERROR = (...a) => console.error("%c[WC26]", "color:#ff3a5c;font-weight:bold", ...a);
  
 // ── football-data.org (free tier, no key needed for basic endpoints)
-const FD_BASE   = "https://api.football-data.org/v4";
-const FD_HEADS  = { "X-Auth-Token": "REPLACE_WITH_YOUR_KEY" }; // free at football-data.org
+const FD_BASE   = "https://www.balldontlie.io/openapi/fifa.yml";
+const FD_HEADS  = { "X-Auth-Token": "e55d30d7-18d1-40ed-aef5-420113bd3e85" }; 
 const WC_ID     = 2000; // FIFA World Cup competition ID
  
 // ── REST Countries (no key required) – for flags & country data
