@@ -13,10 +13,31 @@ const LOG   = (...a) => console.log  ("%c[WC26]", "color:#3d6fff;font-weight:bol
 const WARN  = (...a) => console.warn ("%c[WC26]", "color:#f5c842;font-weight:bold", ...a);
 const ERROR = (...a) => console.error("%c[WC26]", "color:#ff3a5c;font-weight:bold", ...a);
  
-// ── football-data.org (free tier, no key needed for basic endpoints)
-const FD_BASE   = "https://www.balldontlie.io/openapi/fifa.yml";
-const FD_HEADS  = { "X-Auth-Token": "e55d30d7-18d1-40ed-aef5-420113bd3e85" }; 
-const WC_ID     = 2000; // FIFA World Cup competition ID
+// ── football-data.org Configuration
+const API_KEY   = "5c00d7e4bd3849568c0e37ff9c6b610a";
+// Use the Competition ID (2000) or the Competition Code ("WC")
+const COMP_CODE = "WC"; 
+const BASE_URL  = `https://football-data.org{COMP_CODE}/matches`;
+
+const FD_HEADS  = { 
+  "X-Auth-Token": API_KEY 
+};
+
+// Fetch function to get the matches
+async function getWorldCupMatches() {
+  try {
+    const response = await fetch(BASE_URL, { headers: FD_HEADS });
+    if (!response.ok) throw new Error(`Error: ${response.status}`);
+    
+    const data = await response.json();
+    console.log("World Cup matches:", data.matches);
+    return data.matches;
+  } catch (error) {
+    console.error("Fetch failed:", error);
+  }
+}
+
+getWorldCupMatches();
  
 // ── REST Countries (no key required) – for flags & country data
 const COUNTRIES_BASE = "https://restcountries.com/v3.1";
