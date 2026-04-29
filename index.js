@@ -13,31 +13,19 @@ const LOG   = (...a) => console.log  ("%c[WC26]", "color:#3d6fff;font-weight:bol
 const WARN  = (...a) => console.warn ("%c[WC26]", "color:#f5c842;font-weight:bold", ...a);
 const ERROR = (...a) => console.error("%c[WC26]", "color:#ff3a5c;font-weight:bold", ...a);
  
-// ── football-data.org Configuration
-const API_KEY   = "5c00d7e4bd3849568c0e37ff9c6b610a";
-// Use the Competition ID (2000) or the Competition Code ("WC")
-const COMP_CODE = "WC"; 
-const BASE_URL  = `https://football-data.org{COMP_CODE}/matches`;
 
-const FD_HEADS  = { 
-  "X-Auth-Token": API_KEY 
+const FD_BASE = "https://v3.football.api-sports.io/";
+const FD_HEADS = {
+  "x-apisports-key": "4c201efc9fcbee288f724c78b2d34054"
 };
 
-// Fetch function to get the matches
-async function getWorldCupMatches() {
-  try {
-    const response = await fetch(BASE_URL, { headers: FD_HEADS });
-    if (!response.ok) throw new Error(`Error: ${response.status}`);
-    
-    const data = await response.json();
-    console.log("World Cup matches:", data.matches);
-    return data.matches;
-  } catch (error) {
-    console.error("Fetch failed:", error);
-  }
-}
+const WC_ID = 1;
 
-getWorldCupMatches();
+const url = `${FD_BASE}fixtures?league=${WC_ID}&season=2022`;
+
+fetch(url, { headers: FD_HEADS })
+  .then(res => res.json())
+  .then(data => console.log(data));
  
 // ── REST Countries (no key required) – for flags & country data
 const COUNTRIES_BASE = "https://restcountries.com/v3.1";
@@ -205,39 +193,60 @@ function weatherCodeEmoji(code) {
    API: FOOTBALL-DATA.ORG (requires free API key)
    ═══════════════════════════════════════════════════════════════ */
 async function fetchMatchesFromAPI() {
-  if (FD_HEADS["X-Auth-Token"] === "REPLACE_WITH_YOUR_KEY") {
-    WARN("football-data.org API key not set — using fallback data. Get a free key at https://www.football-data.org/");
+  if (!FD_HEADS["x-apisports-key"] || FD_HEADS["x-apisports-key"] === "4c201efc9fcbee288f724c78b2d34054") {
+    WARN("API-Football key not set — using fallback data.");
     return null;
   }
-  const cacheKey = "fd_matches";
+
+  const cacheKey = "api_football_matches";
   const cached = cacheGet(cacheKey);
   if (cached) return cached;
- 
+
   try {
-    const data = await fetchJSON(`${FD_BASE}/competitions/${WC_ID}/matches`, { headers: FD_HEADS });
-    const matches = (data.matches || []).slice(0, 30).map(m => ({
-      id    : m.id,
-      type  : m.stage?.toLowerCase().includes("group") ? "group" : "knockout",
-      date  : m.utcDate?.split("T")[0],
-      time  : m.utcDate?.split("T")[1]?.slice(0,5),
-      home  : m.homeTeam?.name || "TBD",
-      away  : m.awayTeam?.name || "TBD",
-      scoreH: m.score?.fullTime?.home ?? null,
-      scoreA: m.score?.fullTime?.away ?? null,
-      status: m.status,
-      venue : m.venue || "TBD",
+    const url = `${FD_BASE}fixtures?league=${WC_ID}&season=2022`;
+
+    const data = await fetchJSON(url, { headers: FD_HEADS });
+
+    const matches = (data.response || []).map(f => ({
+      id: f.fixture.id,
+
+      type: f.league.round?.toLowerCase().includes("group")
+        ? "group"
+        : "knockout",
+
+      date: f.fixture.date?.split("T")[0],
+      time: f.fixture.date?.split("T")[1]?.slice(0, 5),
+
+      // ✅ FIXED TEAM NAMES
+      home: f.teams?.home?.name || "TBD",
+      away: f.teams?.away?.name || "TBD",
+
+      scoreH: f.goals?.home ?? null,
+      scoreA: f.goals?.away ?? null,
+
+      status: f.fixture.status?.short === "FT"
+        ? "FINISHED"
+        : f.fixture.status?.short === "NS"
+        ? "SCHEDULED"
+        : "LIVE",
+
+      venue: f.fixture.venue?.name
+        ? `${f.fixture.venue.name}, ${f.fixture.venue.city}`
+        : "TBD",
     }));
+
     cacheSet(cacheKey, matches, 5 * 60 * 1000);
-    LOG(`Fetched ${matches.length} matches from football-data.org API`);
+    LOG(`Fetched ${matches.length} matches from API-Football`);
+
     return matches;
-  } catch(e) {
-    ERROR("football-data.org fetch failed:", e.message);
+  } catch (e) {
+    ERROR("API-Football fetch failed:", e.message);
     return null;
   }
 }
  
 async function fetchTeamsFromAPI() {
-  if (FD_HEADS["X-Auth-Token"] === "REPLACE_WITH_YOUR_KEY") return null;
+  if (FD_HEADS["X-Auth-Token"] === "4c201efc9fcbee288f724c78b2d34054") return null;
   const cacheKey = "fd_teams";
   const cached = cacheGet(cacheKey);
   if (cached) return cached;
